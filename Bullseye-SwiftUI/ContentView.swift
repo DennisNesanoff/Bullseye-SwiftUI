@@ -17,6 +17,10 @@ struct ContentView: View {
     @State var sliderValue = 50.0
     @State var target = Int.random(in: 1...100)
     
+    var currentSliderValue: Int {
+        Int(self.sliderValue.rounded())
+    }
+    
     // User interface content and layout
     var body: some View {
         VStack {
@@ -25,28 +29,28 @@ struct ContentView: View {
             // Target row
             HStack {
                 Text("Put the bullseye as close as you can to:")
-                Text("100")
+                Text("\(target)")
             }
             Spacer()
             
             // Slider row
             HStack {
                 Text("1")
-                Slider(value: self.$sliderValue, in: 0...100)
+                Slider(value: self.$sliderValue, in: 1...100)
                 Text("100")
             }
             Spacer()
             
             // Button row
             Button(action: {
-                print("Button pressed!")
+                print("Points awarded: \(self.pointsForCurrentRound())")
                 self.alertIsVisible = true
             }) {
                 Text("Hit me!")
             }.alert(isPresented: self.$alertIsVisible) {
                 Alert(title: Text("Hello there!"),
-                      message: Text("The slider's value is \(Int(sliderValue.rounded()))"),
-                      dismissButton: .default(Text("Dismiss")))
+                      message: Text(alertMessage()),
+                      dismissButton: .default(Text("Awesome!")))
             }
             Spacer()
             
@@ -69,8 +73,25 @@ struct ContentView: View {
                 }
             }
             .padding(.bottom, 20)
-            // MARK: - Methods
+            
         }
+    }
+    
+    // MARK: - Methods
+    func pointsForCurrentRound() -> Int {
+        let difference: Int
+        if currentSliderValue > target {
+            difference = currentSliderValue - target
+        } else if target > currentSliderValue {
+        difference = target - currentSliderValue } else {
+        difference = 0 }
+        return 100 - difference
+    }
+    
+    func alertMessage() -> String {
+        return "The slider's value is \(currentSliderValue).\n"
+            + "The target value is \(target).\n"
+            + "You scored \(pointsForCurrentRound()) points this round."
     }
 }
 
