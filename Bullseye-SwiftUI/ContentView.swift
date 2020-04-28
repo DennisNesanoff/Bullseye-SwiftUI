@@ -14,6 +14,8 @@ struct ContentView: View {
 
     // User interface views
     @State var alertIsVisible = false
+    @State var sliderValue = 50.0
+    @State var target = Int.random(in: 1...100)
     
     // User interface content and layout
     var body: some View {
@@ -30,7 +32,7 @@ struct ContentView: View {
             // Slider row
             HStack {
                 Text("1")
-                Slider(value: .constant(50), in: 0...100)
+                Slider(value: self.$sliderValue, in: 0...100)
                 Text("100")
             }
             Spacer()
@@ -43,7 +45,7 @@ struct ContentView: View {
                 Text("Hit me!")
             }.alert(isPresented: self.$alertIsVisible) {
                 Alert(title: Text("Hello there!"),
-                      message: Text("This is my first pop-up."),
+                      message: Text("The slider's value is \(Int(sliderValue.rounded()))"),
                       dismissButton: .default(Text("Dismiss")))
             }
             Spacer()
@@ -66,6 +68,7 @@ struct ContentView: View {
                     Text("Info")
                 }
             }
+            .padding(.bottom, 20)
             // MARK: - Methods
         }
     }
